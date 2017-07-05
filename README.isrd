@@ -1,25 +1,19 @@
 
 This is internal documenation for XTK used 
-for our 3d viewer and mesh-viewer
+for our 3D viewer and mesh-viewer
 
 XTK in the wild,
    https://github.com/xtk/X.git
 
 forked from XTK in the wild,
    https://github.com/informatics-isi-edu/X.git
-fork from informatics X
-   https://github.com/meihuisu/X.git
-    (https://github.com/informatics-isi-edu/X-isrd.git)
 
-informatics' X is used to generate pull request back to
-the XTK in the wild. It follows closely with XTK in the
-wild and has just minimal changes made that was accepted
-back into XTK in the wild code base.
-
-informatics' X-isrd is the repo that contains the bulk
-changes we did to work with our viewers
+informatics' X is the repo that contains the bulk
+changes we did to work with our viewers and it follows
+the XTK in the wild closely
 
 Mainly, the io/parserTIFF.js
+        and also changes to track multichanneled tiffs
         and also some additional code here and there
         that were needed for our datasets 
 (look into stackoverflow issues under xtk for some 
