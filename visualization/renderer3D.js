@@ -282,6 +282,21 @@ X.renderer3D.prototype.resetBoundingBox = function() {
 
 };
 
+/**
+ * Get the Global Bounding Box of this renderer.
+ *
+ * @return {!Array} The dimensions of this renderer.
+ * @public
+ */
+X.renderer3D.prototype.__defineGetter__('bbox', function() {
+
+  var _bbox= [ this._minX, this._maxX,
+               this._minY, this._maxY,
+               this._minZ, this._maxZ ];
+  return _bbox; 
+
+});
+
 
 /**
  * @inheritDoc
@@ -1453,6 +1468,8 @@ X.renderer3D.prototype.render_ = function(picking, invoked) {
   // call the render_ method of the superclass
   goog.base(this, 'render_', picking, invoked);
 
+//MEI
+//window.console.log("calling rendering3d with "+this._width+" "+this._height);
   // clear the canvas
   this._context.viewport(0, 0, this._width, this._height);
   this._context.clear(this._context.COLOR_BUFFER_BIT |
@@ -2195,6 +2212,39 @@ X.renderer3D.prototype.ray_intersect_box_ = function(box, ray_start, ray_directi
 
 };
 
+// track X number of closest points
+X.renderer3D.prototype.track_ = function(plist,dlist,s,d) {
+    // track X number of closest points
+    var track_max=5;
+    // found the point
+    if(plist.length == 0) {
+       plist.push(s);
+       dlist.push(d);
+       } else {
+          for( var i=0; i<plist.length && i<track_max ; i++) {
+             if(d == dlist[i]) {
+               if(plist[i][0] == s[0] && plist[i][1]== s[1] 
+                                     && plist[i][2]== s[2]) { //  duplicates
+//window.console.log("pick3d, found a duplicate at "+i);
+                 return;
+                 } else { // insert in the middle
+                   plist.splice(i, 0, s);
+                   dlist.splice(i, 0, d);
+//window.console.log("pick3d, insert at.. "+(i));
+                   return;
+               }
+             } else {
+                 if(d < dlist[i]) { 
+                   plist.splice(i, 0, s);
+                   dlist.splice(i, 0, d);
+//window.console.log("pick3d, insert at. "+(i));
+                   return;
+                 }
+             }
+          }
+  } 
+}
+
 /**
  * Pick an object intersection in world space by using raycasting.
  *
@@ -2355,6 +2405,9 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
   //var m_i = X.matrix.identity();
   //X.matrix.invert(object.transform.matrix, m_i);
 
+ // [ [march_point, [near_points]],..,[march_point,[near_points]]
+ var c_p_rlist=[]; // return with marching point projection list
+
   // sample
   for (var i=0; i<sample_count; i+=delta) {
 
@@ -2365,6 +2418,11 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
     // multiply s_p with the inverse transformation matrix
     // s_p = X.matrix.multiplyByVector(m_i, s_p);
     // s_p = [s_p.x, s_p.y, s_p.z];
+
+    // track X number of closest points
+    var c_p_plist=[];
+    var c_p_dlist=[];
+    var track_cnt=0;
 
     // find the closest point
     for (var p=0; p<points_count; p+=3) {
@@ -2381,13 +2439,22 @@ X.renderer3D.prototype.pick3d = function(x, y, delta, epsilon, object) {
       if (d <= epsilon) {
 
         // found the point
-        return [c_p.x, c_p.y, c_p.z];
+        var _s= [c_p.x, c_p.y, c_p.z];
+        this.track_(c_p_plist,c_p_dlist,_s,d);
+        track_cnt++;
 
+//        return [c_p.x, c_p.y, c_p.z];
       }
-
     }
-
+    c_p_rlist.push([[s_p],c_p_plist.slice(0,5)]);
+    if(c_p_plist.length > 0) {
+      return c_p_rlist; // stop at the first intersection
+//      c_p_plist=[];
+    }
   }
+
+//  if(c_p_rlist.length > 0)
+//    return c_p_rlist;
 
   // nothing found with the current delta and epsilon settings
   return null;
@@ -2411,6 +2478,8 @@ goog.exportSymbol('X.renderer3D.prototype.remove',
     X.renderer3D.prototype.remove);
 goog.exportSymbol('X.renderer3D.prototype.resetBoundingBox',
     X.renderer3D.prototype.resetBoundingBox);
+goog.exportSymbol('X.renderer3D.prototype.bbox',
+    X.renderer3D.prototype.bbox);
 goog.exportSymbol('X.renderer3D.prototype.resetViewAndRender',
     X.renderer3D.prototype.resetViewAndRender);
 goog.exportSymbol('X.renderer3D.prototype.pick', X.renderer3D.prototype.pick);

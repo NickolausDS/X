@@ -32,6 +32,7 @@ goog.provide('X.progressbar');
 
 // requires
 goog.require('X.base');
+goog.require('X.debug');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.ui.ProgressBar');
@@ -193,7 +194,6 @@ X.progressbar.prototype.init_ = function() {
   pbElement.style.top = (this._parent.clientHeight - 5) / 2 + 'px';
   pbElement.style.left = (this._parent.clientWidth - 100) / 2 + 'px';
   pbElement.classList.add('xtk-progress-bar');
-  
 };
 
 
@@ -245,6 +245,11 @@ X.progressbar.prototype.kill = function() {
   }
   if (this._doneProgressBar) {
     goog.dom.removeNode(this._doneProgressBar.getElement());
+/* MEI
+    } else {
+     printDebug("BAD, progressBar, calling kill but did not have done node.");
+ 
+*/
   }
   
   this._style = null;

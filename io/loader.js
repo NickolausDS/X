@@ -40,6 +40,7 @@ goog.require('X.parserLBL');
 goog.require('X.parserLUT');
 goog.require('X.parserMGZ');
 goog.require('X.parserNII');
+goog.require('X.parserTIFF');
 goog.require('X.parserMRC');
 goog.require('X.parserNRRD');
 goog.require('X.parserOBJ');
@@ -384,6 +385,8 @@ X.loader.extensions = {
   'ORIG': [X.parserFSM, null],
   'NRRD': [X.parserNRRD, null],
   'NII': [X.parserNII, null],
+  'TIF': [X.parserTIFF, null],
+  'TIFF': [X.parserTIFF, null],
   'DCM': [X.parserDCM, null],
   'DICOM': [X.parserDCM, null],
   '': [X.parserDCM, null],

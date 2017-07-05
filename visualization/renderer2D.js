@@ -31,6 +31,7 @@
 goog.provide('X.renderer2D');
 // requires
 goog.require('X.renderer');
+goog.require('X.debug');
 goog.require('goog.math.Vec3');
 goog.require('goog.vec.Vec4');
 
@@ -341,6 +342,8 @@ X.renderer2D.prototype.onWindowLevel_ = function(event) {
   _volume._windowHigh += parseInt(_old_window - _new_window, 10);
   _volume._windowHigh = Math.min(_volume._windowHigh, _volume._max);
 
+//printDebug("windowLevel, vol.windowLow "+_volume._windowLow+" vol.windowHigh "+_volume._windowHigh);
+
   // execute the callback
   eval('this.onWindowLevel();');
 
@@ -544,6 +547,7 @@ X.renderer2D.prototype.resetViewAndRender = function() {
     _volume._windowLow = _volume._min;
 
   }
+//printDebug("resetView, vol.windowLow "+_volume._windowLow+" vol.windowHigh "+_volume._windowHigh);
   // .. render
   // this.render_(false, false);
 };
@@ -1071,11 +1075,14 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
   var _pixelsLength = _pixels.length;
 
   // threshold values
-  var _maxScalarRange = _volume._max;
+// MEI
+  var _maxScalarRange = _volume._max - _volume._min;
   var _lowerThreshold = _volume._lowerThreshold;
   var _upperThreshold = _volume._upperThreshold;
   var _windowLow = _volume._windowLow;
   var _windowHigh = _volume._windowHigh;
+
+//printDebug("renderer2D("+this._orientationIndex+") lowerT "+_lowerThreshold+" upperT "+_upperThreshold +" winLow "+_windowLow+" winHigh "+_windowHigh);
 
   // caching mechanism
   // we need to redraw the pixels only
@@ -1103,6 +1110,11 @@ X.renderer2D.prototype.render_ = function(picking, invoked) {
     // loop through the pixels and draw them to the invisible canvas
     // from bottom right up
     // also apply thresholding
+//printDebug("slice "+ _sliceData[0]+ " "+ _sliceData[1]+ " "+
+//_sliceData[2]+ " "+ _sliceData[3]+ " "+ _sliceData[4]+ " "+
+//_sliceData[5]+ " "+ _sliceData[6]+ " "+ _sliceData[7]+ " "+
+//_sliceData[8]+ " "+ _sliceData[9]);
+
     var _index = 0;
     do {
 

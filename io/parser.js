@@ -142,7 +142,6 @@ X.parser.prototype.parse = function(container, object, data, flag) {
 
 };
 
-
 //
 // PARSE FUNCTIONS
 //
@@ -233,6 +232,17 @@ X.parser.prototype.jumpTo = function(position) {
 
 };
 
+/**
+ * Return the current position in the byte stream.
+ *
+ * @return {number} The current byte pointer.
+ */
+X.parser.prototype.tell = function() {
+
+  return this._dataPointer;
+
+};
+
 
 /**
  * Scan binary data relative to the internal position in the byte stream.
@@ -242,6 +252,7 @@ X.parser.prototype.jumpTo = function(position) {
  *          'uchar','schar','ushort','sshort','uint','sint','float'
  * @param {!number=}
  *          chunks The number of chunks to scan. By default, 1.
+ * @return {!Object} The typed array.
  */
 X.parser.prototype.scan = function(type, chunks) {
 
@@ -1047,6 +1058,7 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
   // scale
   goog.vec.Vec4.scale(_sliceNormal,_xySpacing[2],_sliceDirection);
 
+/* MEI causing small pixdim to be fuzzy
   // by default the minimum in plane spacing is 0.1
    if(Math.abs(_xySpacing[0]) < 0.1){
      _xySpacing[0] =  0.1;
@@ -1055,6 +1067,8 @@ X.parser.prototype.updateSliceInfo = function(_index, _sliceOrigin, _sliceNormal
    if(Math.abs(_xySpacing[1]) < 0.1){
      _xySpacing[1] =  0.1;
    }
+
+*/
 
    // increase resolution if needed
    _xySpacing[0] /= object._resolutionFactor;
@@ -1325,3 +1339,4 @@ X.parser.prototype.reslice = function(object) {
 
   return object._IJKVolume;
 };
+

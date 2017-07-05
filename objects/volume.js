@@ -34,6 +34,7 @@ goog.provide('X.volume');
 goog.require('X.object');
 goog.require('X.slice');
 goog.require('X.parser');
+goog.require('X.debug');
 goog.require('X.thresholdable');
 
 
@@ -543,6 +544,7 @@ X.volume.prototype.slicing_ = function() {
 
     }
 
+
     // RESLICE VOLUME IF NECESSARY!
     if(!goog.isDefAndNotNull(this._children[xyz]._children[parseInt(currentIndex, 10)])){
 
@@ -1004,6 +1006,7 @@ X.volume.prototype.__defineGetter__('windowLow', function() {
  */
 X.volume.prototype.__defineSetter__('windowLow', function(windowLow) {
 
+  printDebug("reset -> WindowLow, from "+this._windowLow + " to "+windowLow);
   this._windowLow = windowLow;
 
 });
@@ -1031,6 +1034,7 @@ X.volume.prototype.__defineGetter__('windowHigh', function() {
  */
 X.volume.prototype.__defineSetter__('windowHigh', function(windowHigh) {
 
+  printDebug("reset -> WindowHigh, from "+this._windowHigh + " to "+windowHigh);
   this._windowHigh = windowHigh;
 
 });
@@ -1553,6 +1557,13 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
   if (this._volumeRenderingCache.indexOf(direction) == -1) {
 
+// need to make sure nothing is computing..
+/* MEI 
+    if( this._computing == true) {
+      printDebug("BAD, something is computing already.. want to do "+direction);
+    }
+*/ 
+
     this._volumeRenderingCache.push(direction);
 
     this._computing = true;
@@ -1574,7 +1585,6 @@ X.volume.prototype.volumeRendering_ = function(direction) {
 
     var i;
     for (i = 0; i < _numberOfSlices; i++) {
-
       _child._children[i]._visible = true;
 
     }
@@ -1842,6 +1852,8 @@ X.volume.prototype.volumeRendering_ = function(direction) {
  */
 X.volume.prototype.onComputing_ = function(direction) {
 
+//MEI printDebug("x.volume, onComptuing_, direction="+direction);
+
   var computingEvent = new X.event.ComputingEvent();
   computingEvent._object = this;
   this.dispatchEvent(computingEvent);
@@ -1859,6 +1871,8 @@ X.volume.prototype.onComputing_ = function(direction) {
  * @protected
  */
 X.volume.prototype.onComputingProgress_ = function(progress) {
+
+//MEI printDebug("x.volume, onComptuingProgress_, progress="+progress);
 
   var computingProgressEvent = new X.event.ComputingProgressEvent();
   computingProgressEvent._value = progress;
@@ -1878,6 +1892,8 @@ X.volume.prototype.onComputingProgress_ = function(progress) {
  *
  */
 X.volume.prototype.onComputingEnd_ = function(direction) {
+
+//MEI printDebug("x.volume, onComptuingEnd_, direction="+direction);
 
   var computingEndEvent = new X.event.ComputingEndEvent();
   computingEndEvent._object = this;

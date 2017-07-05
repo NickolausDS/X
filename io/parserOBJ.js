@@ -83,6 +83,8 @@ X.parserOBJ.prototype.parse = function(container, object, data, flag) {
   var _length = _data.byteLength;
   var byteData = this.scan('uchar', _length);
 
+//window.console.log("parse: legth "+_length);
+
   // allocate memory using a good guess
   var _pts = [];
   object._points = new X.triplets(_length);
@@ -138,6 +140,8 @@ X.parserOBJ.prototype.parse = function(container, object, data, flag) {
      }
   
   }
+//window.console.log("last _pts is "+ _pts.length);
+//window.console.log("last p triplet is "+p.length);
 
   X.TIMERSTOP(this._classname + '.parse');
   
