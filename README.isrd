@@ -42,7 +42,8 @@ There are couple of steps to build the XTK standalone,
 Here is the short list,
 
   git clone the src
-  git update submodules
+  git submodule init
+  git submodule update
   utils/deps.py
   utils/build.py
 
